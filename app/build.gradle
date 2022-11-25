@@ -2,7 +2,6 @@ plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
 }
-
 android {
     namespace 'dev.jmarin.bibliotecasugr'
     compileSdk 33
@@ -11,20 +10,19 @@ android {
         applicationId "dev.jmarin.bibliotecasugr"
         minSdk 21
         targetSdk 33
-        versionCode 7
-        versionName "1.1"
-
+        versionCode 10
+        versionName "1.2.1"
+        multiDexEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
-
     buildTypes {
         release {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
         debug{
-            minifyEnabled true
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            /*minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'*/
         }
     }
     compileOptions {
@@ -37,6 +35,9 @@ android {
     packagingOptions {
         exclude 'META-INF/DEPENDENCIES'
         exclude 'mozilla/public-suffix-list.txt'
+    }
+    lint {
+        baseline = file("lint-baseline.xml")
     }
 }
 

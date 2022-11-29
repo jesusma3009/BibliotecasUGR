@@ -5,13 +5,12 @@ plugins {
 android {
     namespace 'dev.jmarin.bibliotecasugr'
     compileSdk 33
-    android.defaultConfig.ndk.debugSymbolLevel = 'FULL'
     defaultConfig {
         applicationId "dev.jmarin.bibliotecasugr"
         minSdk 21
         targetSdk 33
-        versionCode 10
-        versionName "1.2.1"
+        versionCode 11
+        versionName "1.2.2"
         multiDexEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }

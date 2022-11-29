@@ -14,6 +14,8 @@ import it.skrape.fetcher.*
 import it.skrape.selects.*
 import it.skrape.selects.html5.td
 import kotlinx.coroutines.*
+import java.net.HttpURLConnection
+import java.net.URL
 
 class MainActivity : AppCompatActivity() {
     private lateinit var recyclerView: RecyclerView
@@ -53,11 +55,14 @@ class MainActivity : AppCompatActivity() {
         var seatsOccupied = mutableListOf<String>()
         var freePlaces = mutableListOf<String>()
         withContext(Dispatchers.IO) {
+            var finalUrl : String = getFinalURL("https://jmarin.dev/url/qmlb")
+            finalUrl = finalUrl.substringAfterLast('?')
+            finalUrl = "https://oficinavirtual.ugr.es/TUI/consultaAulasEstudio/ocupacion.jsp?$finalUrl"
             skrape(HttpFetcher) {
 
                 request {
                     url =
-                        "https://oficinavirtual.ugr.es/TUI/consultaAulasEstudio/ocupacion.jsp"
+                        "$finalUrl"
                     userAgent = "Bibliotecas UGR Unofficial App"
                     method = Method.GET
 
@@ -101,4 +106,17 @@ class MainActivity : AppCompatActivity() {
         }
         return data.toList()
     }
+
+    fun getFinalURL(url: String): String {
+        val con: HttpURLConnection = URL(url).openConnection() as HttpURLConnection
+        con.instanceFollowRedirects = false
+        con.connect()
+        con.inputStream
+        if (con.getResponseCode() == HttpURLConnection.HTTP_MOVED_PERM || con.getResponseCode() == HttpURLConnection.HTTP_MOVED_TEMP) {
+            val redirectUrl: String = con.getHeaderField("Location")
+            return getFinalURL(redirectUrl)
+        }
+        return url
+    }
+
 }

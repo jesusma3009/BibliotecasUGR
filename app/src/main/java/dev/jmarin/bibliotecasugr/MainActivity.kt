@@ -30,8 +30,9 @@ class MainActivity : AppCompatActivity() {
             }
             catch (e : Exception){
                 val internetText = findViewById<TextView>(R.id.tvInternet)
-                internetText.visibility = View.VISIBLE
-                //Log.e("ErrorConnect", e.message.toString())
+                CoroutineScope(Dispatchers.Main).launch{
+                    internetText.visibility = View.VISIBLE
+                }
             }
         }
         updateDataButton.setOnClickListener{

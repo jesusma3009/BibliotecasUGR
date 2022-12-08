@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Button
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -25,6 +26,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         recyclerView = findViewById(R.id.rvData)
         val updateDataButton = findViewById<Button>(R.id.btnUpdateData)
+        val progressBar = findViewById<ProgressBar>(R.id.progressBar)
         CoroutineScope(Dispatchers.IO).launch {
             try{
                 updateRecyclerView(getData())
@@ -34,6 +36,9 @@ class MainActivity : AppCompatActivity() {
                 CoroutineScope(Dispatchers.Main).launch{
                     internetText.visibility = View.VISIBLE
                 }
+            }
+            CoroutineScope(Dispatchers.Main).launch {
+                progressBar.visibility = View.INVISIBLE
             }
         }
         updateDataButton.setOnClickListener{

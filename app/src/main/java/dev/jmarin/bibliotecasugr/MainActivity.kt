@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import it.skrape.core.htmlDocument
 import it.skrape.fetcher.*
 import it.skrape.selects.*
+import it.skrape.selects.html5.div
 import it.skrape.selects.html5.td
 import kotlinx.coroutines.*
 import java.net.HttpURLConnection
@@ -51,19 +52,15 @@ class MainActivity : AppCompatActivity() {
         }
     }
     private suspend fun getData() : List<LibraryData> {
-        var data = mutableListOf<LibraryData>()
+        val data = mutableListOf<LibraryData>()
         var nameLibrary = mutableListOf<String>()
         var seatsOccupied = mutableListOf<String>()
         var freePlaces = mutableListOf<String>()
         withContext(Dispatchers.IO) {
-            var finalUrl : String = getFinalURL("https://jmarin.dev/url/qmlb")
-            finalUrl = finalUrl.substringAfterLast('?')
-            finalUrl = "https://oficinavirtual.ugr.es/TUI/consultaAulasEstudio/ocupacion.jsp?$finalUrl"
             skrape(HttpFetcher) {
 
                 request {
-                    url =
-                        "$finalUrl"
+                    url = getFinalURL("https://jmarin.dev/url/c4zj")
                     userAgent = "Bibliotecas UGR Unofficial App"
                     method = Method.GET
 
@@ -71,22 +68,27 @@ class MainActivity : AppCompatActivity() {
                 response {
                     htmlDocument {
                         relaxed = true
-                        td {
-                            withClass = "ubicacion"
-                            findAll {
-                                nameLibrary = eachText.toMutableList()
-                            }
-                        }
-                        td {
-                            withId = "texto-rojo"
-                            findAll {
-                                seatsOccupied = eachText.toMutableList()
-                            }
-                        }
-                        td {
-                            withId = "texto-verde"
-                            findAll {
-                                freePlaces = eachText.toMutableList()
+                        div{
+                            withId = "espacios_ocupacion"
+                            findAll{
+                                div {
+                                    withClass = "col-6"
+                                    findAll {
+                                        nameLibrary = eachText.toMutableList()
+                                    }
+                                }
+                                div {
+                                    withClass = "text-danger"
+                                    findAll {
+                                        seatsOccupied = eachText.toMutableList()
+                                    }
+                                }
+                                div {
+                                    withClass = "text-success"
+                                    findAll {
+                                        freePlaces = eachText.toMutableList()
+                                    }
+                                }
                             }
                         }
                     }
@@ -95,25 +97,22 @@ class MainActivity : AppCompatActivity() {
             for (i in 0 until nameLibrary.size) {
                 data.add(
                     LibraryData(
-                        nameLibrary[i].toString(),
-                        seatsOccupied[i].toString(),
-                        freePlaces[i].toString()
+                        nameLibrary[i],
+                        seatsOccupied[i],
+                        freePlaces[i]
                     )
                 )
-            }
-            if (data.size > 1){
-                data.removeLast()
             }
         }
         return data.toList()
     }
 
-    fun getFinalURL(url: String): String {
+    private fun getFinalURL(url: String): String {
         val con: HttpURLConnection = URL(url).openConnection() as HttpURLConnection
         con.instanceFollowRedirects = false
         con.connect()
         con.inputStream
-        if (con.getResponseCode() == HttpURLConnection.HTTP_MOVED_PERM || con.getResponseCode() == HttpURLConnection.HTTP_MOVED_TEMP) {
+        if (con.responseCode == HttpURLConnection.HTTP_MOVED_PERM || con.responseCode == HttpURLConnection.HTTP_MOVED_TEMP) {
             val redirectUrl: String = con.getHeaderField("Location")
             return getFinalURL(redirectUrl)
         }

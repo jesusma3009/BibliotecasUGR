@@ -14,10 +14,7 @@ import it.skrape.core.htmlDocument
 import it.skrape.fetcher.*
 import it.skrape.selects.*
 import it.skrape.selects.html5.div
-import it.skrape.selects.html5.td
 import kotlinx.coroutines.*
-import java.net.HttpURLConnection
-import java.net.URL
 
 class MainActivity : AppCompatActivity() {
     private lateinit var recyclerView: RecyclerView
@@ -36,6 +33,7 @@ class MainActivity : AppCompatActivity() {
                 CoroutineScope(Dispatchers.Main).launch{
                     internetText.visibility = View.VISIBLE
                 }
+                Log.e("DataException", e.toString())
             }
             CoroutineScope(Dispatchers.Main).launch {
                 progressBar.visibility = View.INVISIBLE
@@ -65,9 +63,10 @@ class MainActivity : AppCompatActivity() {
             skrape(HttpFetcher) {
 
                 request {
-                    url = getFinalURL("https://jmarin.dev/url/c4zj")
+                    url = "https://jmarin.dev/url/c4zj"
                     userAgent = "Bibliotecas UGR Unofficial App"
                     method = Method.GET
+                    followRedirects = true
 
                 }
                 response {
@@ -110,18 +109,6 @@ class MainActivity : AppCompatActivity() {
             }
         }
         return data.toList()
-    }
-
-    private fun getFinalURL(url: String): String {
-        val con: HttpURLConnection = URL(url).openConnection() as HttpURLConnection
-        con.instanceFollowRedirects = false
-        con.connect()
-        con.inputStream
-        if (con.responseCode == HttpURLConnection.HTTP_MOVED_PERM || con.responseCode == HttpURLConnection.HTTP_MOVED_TEMP) {
-            val redirectUrl: String = con.getHeaderField("Location")
-            return getFinalURL(redirectUrl)
-        }
-        return url
     }
 
 }

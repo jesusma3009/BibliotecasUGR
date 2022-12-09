@@ -22,8 +22,4 @@
 
 -keepattributes LineNumberTable,SourceFile
 -renamesourcefileattribute SourceFile
--keep class org.apache.** { *; }
-#-keep class org.apache.xalan.extensions.** { *; }
-#-keep class org.apache.xalan.extensions.** { *; }
--keep class org.w3c.dom.** { *; }
--keep class org.xml.sax.** { *; }
+-keep class org.apache.commons.logging.** { *; }

@@ -64,7 +64,7 @@ class MainActivity : AppCompatActivity() {
 
                 request {
                     url = "https://jmarin.dev/url/c4zj"
-                    userAgent = "Bibliotecas UGR Unofficial App"
+                    //userAgent = "Bibliotecas UGR Unofficial App"
                     method = Method.GET
                     followRedirects = true
 
